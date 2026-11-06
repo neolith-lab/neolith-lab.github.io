@@ -10,7 +10,7 @@ content — no build step, no dependencies, no runtime JS beyond a small theme t
 
     index.html            the whole page (header, hero, capabilities, services, footer)
     styles.css            all styling; dark theme by default, light theme via the toggle
-    blog/index.html       the blog index; the newest post is featured on top
+    blog/index.html       the blog index; every post is its own card, newest first
     blog/*.html           one page per post (~450-680 words, all "3 min read")
     assets/                logo, mockup image, fonts, contributor avatars
     .nojekyll              tells GitHub Pages to serve the files as-is
@@ -43,18 +43,21 @@ committing to `main` is the deploy. Nothing to build.
 
 ## Blog
 
-`blog/index.html` lists the posts; each post is its own file in `blog/`. To add one, copy
-an existing post page and replace the title, the `.post-meta` line (date and read time) and
-the `.post-body` contents. Then add a matching `<a class="post-card">` to `blog/index.html`.
+`blog/index.html` is a card grid — one card per post, newest first, each linking to its own
+page in `blog/`. To add a post, copy an existing post page and replace the title, the
+byline date and read time, and the `.post-body` contents. Then add a matching
+`<a class="post-card">` to `blog/index.html` and put it first (the index reads top-left to
+bottom-right, so the first card is the one "on top").
+
+Each post carries its own `.post-nav` block with "newer post" / "older post" links, and a
+byline with the date and read time. Read times are stated at roughly 225 words per minute,
+rounded up, so all posts sit at "3 min read" — keep a new post under about 675 words and it
+will too.
 
 Everything currently in `blog/` was written for this site — the topics trace back to the
 services on the landing page: voice agents, agentic systems, workflow audits, last-mile
 queries and human-in-the-loop design. `agentic-ai-components.html` is based on the team's
-own write-up of agentic architectures. To feature a different post on top, move its
-`<a class="featured-post">` block and add its card to the list below.
-
-Read times are stated at roughly 225 words per minute, rounded up, so all posts sit at
-"3 min read".
+own write-up of agentic architectures.
 
 ## Content note
 
