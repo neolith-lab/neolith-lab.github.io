@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your First Voice AI Agent: What Actually Happens on the Call | Neolith Blog</title>
+<meta name="description" content="A voice agent is not a chatbot with a microphone. The hard part is not the language model — it is everything that has to happen inside the pause between two sentences.">
+<link rel="canonical" href="https://neolith-lab.github.io/blog/voice-ai-agent.html">
+<meta property="og:title" content="Your First Voice AI Agent: What Actually Happens on the Call">
+<meta property="og:description" content="A voice agent is not a chatbot with a microphone. The hard part is not the language model — it is everything that has to happen inside the pause between two sentences.">
+<meta property="og:url" content="https://neolith-lab.github.io/blog/voice-ai-agent.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Neolith">
+<link rel="icon" href="../assets/logo.svg">
+<link rel="apple-touch-icon" href="../assets/logo.svg">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <div class="brand">
+      <a class="brand-mark" href="../">Neolith App Tech</a>
+      <a class="badge" href="../#services">
+        <span>🚀</span><span class="sep">|</span>
+        <span class="label">Introducing Neolith</span>
+        <span class="chev">›</span>
+      </a>
+    </div>
+    <nav class="header-nav">
+      <a href="index.html" class="is-active">Blog</a>
+      <a href="mailto:sales@neolithapp.com">Contact Us</a>
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+<main>
+  <article class="article">
+    <p class="post-eyebrow"><a href="index.html">← All posts</a></p>
+    <h1>Your First Voice AI Agent: What Actually Happens on the Call</h1>
+    <p class="post-meta">Neolith Team · <time datetime="2026-11-04">November 4, 2026</time> · 3 min read</p>
+    <p class="post-lede">A voice agent is not a chatbot with a microphone. The hard part is not the language model — it is everything that has to happen inside the pause between two sentences.</p>
+    <div class="post-body">
+<p>Most teams start a voice agent project by writing a personality prompt. That is the least important decision they will make. What decides whether callers hang up satisfied is whether the system can hear, decide and speak again fast enough to feel like a conversation — and whether it knows when to stop guessing and hand over to a person.</p>
+
+<h2>The loop, in plain terms</h2>
+<p>Every voice agent is the same four-stage loop, repeated until the call ends:</p>
+<ul>
+  <li><strong>Transcribe.</strong> Streaming speech-to-text turns audio into words as they are spoken. This stage is where accents, background noise and phone-line compression do their damage.</li>
+  <li><strong>Decide.</strong> The language model receives the transcript, the conversation so far and, crucially, a set of tools it is allowed to call — look up availability, create a booking, check an order.</li>
+  <li><strong>Act.</strong> Tool calls hit your real systems. This is the moment the agent stops being a demo and starts touching production data, which is why permissions, validation and idempotency matter here more than anywhere else.</li>
+  <li><strong>Speak.</strong> Text-to-speech streams audio back, ideally starting on the first clause rather than waiting for the full sentence.</li>
+</ul>
+
+<h2>Latency is the whole game</h2>
+<p>People tolerate a surprising amount of confusion in a voice interface. They do not tolerate silence. If the gap between the caller finishing and the agent responding drifts past roughly a second, callers assume the line dropped: they say "hello?" and talk over the answer.</p>
+<p>You buy that time back in three places. Stream every stage instead of batching it. Keep the model small and fast for routing, and reserve the expensive model for the turns that need judgement. And skip the language model entirely for the genuinely fixed turns — an opening greeting does not need inference.</p>
+
+<h2>Interruption handling is not a nice-to-have</h2>
+<p>Real callers interrupt, correct themselves mid-sentence, and answer before you finish asking. An agent that keeps talking over an interruption feels broken instantly, in a way that no amount of prompt tuning will fix. Barge-in detection — noticing speech while the agent is speaking, stopping playback, and discarding the now-stale half-sentence the agent had planned — is a core capability, not an enhancement.</p>
+
+<h2>Tools decide what the agent can actually do</h2>
+<p>A voice agent with no tools can chat pleasantly and accomplish nothing. The useful ones are narrow and boring: check a calendar, create an appointment, look up a record, escalate. Two rules save a lot of pain. First, every tool needs a failure path the agent can speak out loud, because "the system is unavailable" said calmly is fine and a silent retry loop is not. Second, the outcome should be written down in a structured form — after the call, a machine-readable record of what was decided — so the conversation produces data your team can act on rather than a transcript nobody reads.</p>
+
+<h2>Design the handoff before the happy path</h2>
+<p>The best voice agents are explicit about their limits. Define the intents that must reach a human — complaints, anything medical or financial, a caller who asks twice — and make escalation a first-class tool rather than a fallback. Then route those calls with the context already gathered, so the person picking up does not start from "how can I help you today?".</p>
+
+<h2>Test with transcripts, not vibes</h2>
+<p>Listen to real calls and score them the way you would score any system: task completion, turns to resolution, how often the agent asked for something the caller had already said. Two or three patterns usually account for most bad calls.</p>
+
+<h2>When not to build one</h2>
+<p>If the interaction needs deep negotiation, or if a form would do, a voice agent is an expensive way to frustrate people. Voice earns its place when the caller cannot easily use a screen — on the road, on a warehouse floor, mid-shift — and when the task is bounded enough that a well-tooled agent can finish it.</p>
+    </div>
+    <ul class="post-tags">
+      <li>Voice AI</li>
+      <li>Custom Agent Development</li>
+    </ul>
+    <div class="article-foot">
+      <a class="btn-ghost" href="index.html">← All posts</a>
+      <a class="btn-primary" href="../#services">See our services</a>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <img src="../assets/Neolith_logo.jpeg" alt="Neolith" width="36" height="36">
+      <p>Copyright © 2026 <strong>Neolith Limited</strong>. All rights reserved.</p>
+    </div>
+    <div class="footer-contributors">
+      <span class="label">Contributors</span>
+      <a href="https://github.com/Stav42">
+        <img src="../assets/contributors/stav42.png" alt="" width="26" height="26" loading="lazy">
+        Stav42
+      </a>
+      <a href="https://github.com/Prat2000">
+        <img src="../assets/contributors/prat2000.png" alt="" width="26" height="26" loading="lazy">
+        Prat2000
+      </a>
+      <a href="https://github.com/neolith-lab" title="Neolith on GitHub">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.77.12 3.06.74.8 1.18 1.83 1.18 3.09 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14v3.18c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z"/></svg>
+        neolith-lab
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  try {
+    var saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+  });
+  var header = document.querySelector('.site-header');
+  window.addEventListener('scroll', function () {
+    header.classList.toggle('is-stuck', window.scrollY > 8);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
