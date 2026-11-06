@@ -341,6 +341,9 @@ img { max-width: 100%; display: block; }
 
 .services { padding: 64px 0 96px; }
 
+/* keep jump targets clear of the sticky header */
+#services, #top { scroll-margin-top: 88px; }
+
 .section-head { text-align: center; margin-bottom: 72px; }
 .section-head .eyebrow {
   margin: 0;
